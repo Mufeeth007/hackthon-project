@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="profile-container">
+        <h2>User Profile</h2>
+        <form id="profileForm" method="POST" action="/profile">
+            <div class="input-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="input-group">
+                <label for="details">Details</label>
+                <textarea id="details" name="details" required></textarea>
+            </div>
+            <div class="input-group">
+                <label for="academic">Academic Info</label>
+                <input type="text" id="academic" name="academic" required>
+            </div>
+            <div class="input-group">
+                <label for="skills">Skills</label>
+                <input type="text" id="skills" name="skills" required>
+            </div>
+            <div class="input-group">
+                <label for="interests">Interests</label>
+                <input type="text" id="interests" name="interests" required>
+            </div>
+            <button type="submit" class="profile-btn">Submit</button>
+        </form>
+    </div>
+</body>
+</html>

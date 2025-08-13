@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Student Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-1: #0f1020;
+      --bg-2: #191b3a;
+      --grad-1: #6a5acd;
+      --grad-2: #00d4ff;
+      --card: rgba(255, 255, 255, 0.08);
+      --stroke: rgba(255, 255, 255, 0.18);
+      --text: #e7e9ee;
+      --muted: #aeb3c2;
+      --accent: #62e2ff;
+      --success: #4ade80;
+      --shadow: 0 10px 30px rgba(0,0,0,0.35);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background: radial-gradient(1200px 800px at 10% 10%, #1a1c3b 0%, transparent 60%),
+                  radial-gradient(1000px 700px at 90% 20%, #0a1b2e 0%, transparent 55%),
+                  linear-gradient(120deg, var(--bg-1), var(--bg-2));
+      overflow: hidden;
+    }
+
+    /* Animated orbs */
+    .orbs {
+      position: absolute;
+      inset: -20vmax;
+      filter: blur(40px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .orb {
+      position: absolute;
+      width: 30vmax;
+      height: 30vmax;
+      border-radius: 50%;
+      opacity: 0.5;
+      background: radial-gradient(circle at 30% 30%, var(--grad-2), transparent 60%),
+                  radial-gradient(circle at 70% 70%, var(--grad-1), transparent 55%);
+      animation: float 14s ease-in-out infinite;
+      mix-blend-mode: screen;
+    }
+    .orb:nth-child(1){ left: 5%; top: 10%; animation-delay: -2s; }
+    .orb:nth-child(2){ right: 0; top: 40%; animation-delay: -6s; }
+    .orb:nth-child(3){ left: 20%; bottom: -5%; animation-delay: -10s; }
+    @keyframes float { 0%,100% { transform: translateY(0) translateX(0) scale(1); } 50% { transform: translateY(-30px) translateX(20px) scale(1.05); } }
+
+    /* Layout */
+    .wrap {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      place-items: center;
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    .card {
+      width: min(920px, 100%);
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.06));
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      backdrop-filter: saturate(140%) blur(14px);
+      -webkit-backdrop-filter: saturate(140%) blur(14px);
+    }
+
+    /* Left panel - brand */
+    .brand {
+      position: relative;
+      padding: 40px 36px 36px 36px;
+      background: linear-gradient(135deg, rgba(98,226,255,0.12), rgba(106,90,205,0.10));
+      border-right: 1px solid var(--stroke);
+    }
+    .logo {
+      display: inline-grid;
+      place-items: center;
+      width: 56px; height: 56px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--grad-2), var(--grad-1));
+      box-shadow: inset 0 1px 8px rgba(255,255,255,0.4), 0 8px 24px rgba(98,226,255,0.25);
+    }
+    .logo svg { width: 34px; height: 34px; fill: white; }
+
+    .brand h1 {
+      margin: 18px 0 8px;
+      font-size: 28px;
+      letter-spacing: 0.5px;
+    }
+    .brand p { margin: 0; color: var(--muted); }
+
+    .badge {
+      margin-top: 18px;
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid var(--stroke);
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); box-shadow: 0 0 10px var(--success); }
+
+    /* Right panel - form */
+    .form {
+      padding: 40px 32px;
+      display: grid;
+      align-content: center;
+      gap: 20px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+    }
+    .form h2 { margin: 0 0 6px; font-size: 22px; }
+    .form .sub { margin: 0 0 8px; color: var(--muted); font-size: 14px; }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+    label { font-weight: 600; font-size: 13px; color: #d6d9e2; }
+    .input {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      transition: border-color .2s, box-shadow .2s, background .2s;
+    }
+    .input:focus-within { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(98,226,255,0.15); background: rgba(255,255,255,0.12); }
+    .input svg { width: 18px; height: 18px; opacity: 0.9; }
+    .input input {
+      width: 100%;
+      background: transparent;
+      border: 0;
+      outline: 0;
+      color: var(--text);
+      font-size: 14px;
+      letter-spacing: 0.2px;
+    }
+
+    .row { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+    .hint { color: var(--muted); font-size: 12px; }
+
+    .actions { display: grid; gap: 12px; margin-top: 8px; }
+    .btn {
+      cursor: pointer;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      background: linear-gradient(135deg, var(--grad-2), var(--grad-1));
+      color: #081019;
+      box-shadow: 0 8px 24px rgba(98,226,255,0.25);
+      transition: transform .08s ease, box-shadow .2s ease;
+    }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 12px 30px rgba(98,226,255,0.28); }
+    .btn:active { transform: translateY(0); box-shadow: 0 6px 18px rgba(98,226,255,0.22); }
+
+    .alt {
+      background: transparent;
+      color: var(--muted);
+      border-color: var(--stroke);
+    }
+    .alt:hover { border-color: var(--accent); color: var(--text); }
+
+    .links { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    .link { color: var(--accent); text-decoration: none; font-size: 13px; }
+    .link:hover { text-decoration: underline; }
+
+    .foot { margin-top: 10px; color: var(--muted); font-size: 12px; text-align: center; }
+
+    /* Responsive */
+    @media (max-width: 860px) { .card { grid-template-columns: 1fr; } .brand { border-right: 0; border-bottom: 1px solid var(--stroke);} }
+    @media (max-width: 420px) {
+      .form { padding: 28px 20px; }
+      .brand { padding: 28px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="orbs">
+    <div class="orb"></div>
+    <div class="orb"></div>
+    <div class="orb"></div>
+  </div>
+  <main class="wrap" aria-label="Student login">
+    <section class="card" role="region" aria-labelledby="login-title">
+      <aside class="brand">
+        <div class="logo" aria-hidden="true">
+          <!-- Graduation cap icon -->
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 3L1 8l11 5 9-4.091V17h2V8L12 3zm0 13L5 12v4c0 2.21 3.134 4 7 4s7-1.79 7-4v-4l-7 4z"/>
+          </svg>
+        </div>
+        <h1 id="login-title">Welcome, Student</h1>
+        <p>Access your dashboard, courses, and updates.</p>
+        <span class="badge"><span class="dot"></span> Secure Campus Login</span>
+      </aside>
+
+      <form class="form" action="/login" method="post" aria-describedby="login-sub">
+        <h2>Sign in</h2>
+        <p class="sub" id="login-sub">Use your Student ID or email to continue.</p>
+
+        <div class="field">
+          <label for="studentId">Student ID or Email</label>
+          <div class="input">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/></svg>
+            <input id="studentId" name="studentId" type="text" inputmode="email" autocomplete="username" placeholder="e.g. s12345 or you@example.com" required />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <div class="input">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 17a2 2 0 100-4 2 2 0 000 4zm6-6h-1V8a5 5 0 00-10 0v3H6a2 2 0 00-2 2v7a2 2 0 002 2h12a2 2 0 002-2v-7a2 2 0 00-2-2zm-9-3a3 3 0 016 0v3H9V8z"/></svg>
+            <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Your secure password" required />
+          </div>
+        </div>
+
+        <div class="row">
+          <label class="hint"><input type="checkbox" name="remember" /> Remember me</label>
+          <a class="link" href="#">Forgot password?</a>
+        </div>
+
+        <div class="actions">
+          <button class="btn" type="submit">Login</button>
+          <button class="btn alt" type="button" onclick="window.location.href='#'">Sign in with campus SSO</button>
+        </div>
+
+        <p class="foot">By continuing you agree to our <a class="link" href="#">Terms</a> and <a class="link" href="#">Privacy Policy</a>.</p>
+      </form>
+    </section>
+  </main>
+</body>
+</html>
